@@ -6,6 +6,7 @@
 class UsersController extends Controller
 {
     private $userModel;
+    private $isValidForm;
 
     /**
      * UsersController constructor.
@@ -70,17 +71,26 @@ class UsersController extends Controller
 
             // Make sure errors are empty
             if (empty($data['email_error']) && empty($data['name_error']) && empty($data['password_error']) && empty($data['confirm_password_error'])) {
-                // Validated
+
+                // Check CSRF Token
+                if (!empty($_POST['csrf_token'])) {
+                    $this->isValidForm = checkCSRFToken($_POST['csrf_token'], 'registerForm');
+                }
 
                 // Hash Password
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
                 // Register User
-                if ($this->userModel->register($data)) {
-                    flashMessage('register_success', 'Vous êtes enregistré et vous pouvez vous connecter');
-                    redirectPage('users/login');
+                if ($this->isValidForm) {
+                    if ($this->userModel->register($data)) {
+                        flashMessage('flash_message', 'Vous êtes enregistré et vous pouvez vous connecter');
+                        redirectPage('users/login');
+                    } else {
+                        throw new ErrorException("Quelque chose c'est mal passé");
+                    }
                 } else {
-                    throw new ErrorException("Quelque chose c'est mal passé");
+                    flashMessage('flash_message', 'Violation CSRF', 'alert alert-danger');
+                    redirectPage('users/register');
                 }
             } else {
                 // Load loadView with errors
@@ -135,6 +145,17 @@ class UsersController extends Controller
             }
 
             if (empty($data['email_error']) && empty($data['password_error'])) {
+
+                // Check CSRF Token
+                if (!empty($_POST['csrf_token'])) {
+                    if (!checkCSRFToken($_POST['csrf_token'], 'loginForm')) {
+                        $this->isValidForm = false;
+                        flashMessage('flash_message', 'Violation CSRF', 'alert alert-danger');
+                        redirectPage('users/login');
+                        return;
+                    }
+                }
+
                 $loggedInUser = $this->userModel->login($data['email'], $data['password']);
 
                 if ($loggedInUser) {

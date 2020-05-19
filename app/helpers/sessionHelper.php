@@ -10,7 +10,9 @@ session_start();
 function flashMessage(string $name = '', string $message = '', string $class = 'alert alert-success')
 {
     if (!empty($name)) {
+
         $nameClass = $name . '_class';
+
         if (!empty($message) && empty($_SESSION[$name])) {
             if (!empty($_SESSION[$name])) {
                 unset($_SESSION[$name]);
@@ -23,7 +25,7 @@ function flashMessage(string $name = '', string $message = '', string $class = '
             $_SESSION[$name] = $message;
             $_SESSION[$nameClass] = $class;
         } elseif (empty($message) && !empty($_SESSION[$name])) {
-            $class = !empty($_SESSION[$nameClass]) ? $_SESSION[$name . '_class'] : '';
+            $class = !empty($_SESSION[$nameClass]) ? $_SESSION[$nameClass] : '';
             echo '<div class="' . $class . '" id="flash-msg">' . $_SESSION[$name] . '</div>';
 
             unset($_SESSION[$name]);

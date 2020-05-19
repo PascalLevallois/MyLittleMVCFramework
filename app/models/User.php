@@ -19,7 +19,7 @@
        * @param array $data
        * @return bool
        */
-      public function register(array $data)
+      public function register(array $data) : bool
       {
           $this->db->query('INSERT INTO users (name, email, password) VALUES(:name, :email, :password)');
 
@@ -58,10 +58,12 @@
        * @param string $email
        * @return bool
        */
-      public function findUserByEmail(string $email)
+      public function findUserByEmail(string $email) : bool
       {
           $this->db->query('SELECT * FROM users WHERE email = :email');
           $this->db->bindValue(':email', $email);
+
+          $this->db->findOne();
 
           if ($this->db->rowCount() > 0) {
               return true;
