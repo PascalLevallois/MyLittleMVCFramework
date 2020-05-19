@@ -149,7 +149,6 @@ class UsersController extends Controller
                 // Check CSRF Token
                 if (!empty($_POST['csrf_token'])) {
                     if (!checkCSRFToken($_POST['csrf_token'], 'loginForm')) {
-                        $this->isValidForm = false;
                         flashMessage('flash_message', 'Violation CSRF', 'alert alert-danger');
                         redirectPage('users/login');
                         return;
