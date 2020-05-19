@@ -1,6 +1,8 @@
 # MyLittleMVCFramework
 Squelette de Framework MVC en PHP 7
 
+Protections failles XSS, injections SQL ou Javascript et attaques CSRF
+
 1) Changer le nom de l'url de base dans le htaccess de premier niveau
 2) Changer les paramètres dans le répertoire config
 3) Ajouter vos classes Controllers dans le répertoire controllers
