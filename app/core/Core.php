@@ -1,13 +1,14 @@
 <?php
-declare(strict_types = 1);
 
 /**
  * Class Core
- * Create URL & load Core Controller
+ * Create URL & load Core AbstractController
  * URL Formet : /controller/method/params
  */
   class Core
   {
+      const CONTROLLER = 'Controller';
+
       /**
        * @var mixed|string
        */
@@ -15,7 +16,7 @@ declare(strict_types = 1);
       /**
        * @var mixed|string
        */
-      protected $currentMethod = 'index';
+      protected $currentMethod = 'route';
       /**
        * @var array|false|string[]
        */
@@ -31,14 +32,14 @@ declare(strict_types = 1);
               $url = ['', ''];
           }
 
-          if (file_exists('../app/controllers/' . ucwords($url[0]) . 'Controller.php')) {
-              $this->currentController = ucwords($url[0]). 'Controller';
+          if (file_exists(DIR_CONTROLLERS . ucwords($url[0]) . self::CONTROLLER . EXTENSION)) {
+              $this->currentController = ucwords($url[0]). self::CONTROLLER;
               unset($url[0]);
           } else {
-              $this->currentController = ucwords($this->currentController) . 'Controller';
+              $this->currentController = ucwords($this->currentController) . self::CONTROLLER;
           }
 
-          require_once '../app/controllers/'. $this->currentController . '.php';
+          require_once DIR_CONTROLLERS . $this->currentController . EXTENSION;
 
           $this->currentController = new $this->currentController();
 
@@ -55,6 +56,7 @@ declare(strict_types = 1);
       }
 
       /**
+       * Get URL
        * @return false|string[]
        */
       public function getUrl()

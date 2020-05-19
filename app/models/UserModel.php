@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Class User
+ * Class UserModel
  */
-  class User
+  class UserModel
   {
       private $db;
 
       /**
-       * User constructor.
+       * UserModel constructor.
        */
       public function __construct()
       {
@@ -16,6 +16,7 @@
       }
 
       /**
+       * Register a UserModel
        * @param array $data
        * @return bool
        */
@@ -35,11 +36,12 @@
       }
 
       /**
+       * Connect a User
        * @param string $email
        * @param string $password
        * @return bool|mixed
        */
-      public function login(string $email, string $password)
+      public function connect(string $email, string $password)
       {
           $this->db->query('SELECT * FROM users WHERE email = :email');
           $this->db->bindValue(':email', $email);
@@ -55,6 +57,7 @@
       }
 
       /**
+       * Find a User by Email
        * @param string $email
        * @return bool
        */

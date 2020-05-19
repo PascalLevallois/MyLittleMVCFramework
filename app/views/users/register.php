@@ -33,7 +33,7 @@
               <input type="submit" value="Enregistrement" class="btn btn-primary btn-block">
             </div>
             <div class="col">
-              <a href="<?php echo URL_ROOT; ?>/users/login" class="btn btn-light btn-block">Vous avez un compte ? Connexion</a>
+              <a href="<?php echo URL_ROOT; ?>/users/connect" class="btn btn-light btn-block">Vous avez un compte ? Connexion</a>
             </div>
           </div>
         </form>

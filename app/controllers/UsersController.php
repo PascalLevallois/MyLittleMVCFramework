@@ -3,7 +3,7 @@
 /**
  * Class UsersController
  */
-class UsersController extends Controller
+class UsersController extends AbstractController
 {
     private $userModel;
     private $isValidForm;
@@ -13,10 +13,30 @@ class UsersController extends Controller
      */
     public function __construct()
     {
-        $this->userModel = $this->loadModel('User');
+        $this->userModel = $this->loadModel('UserModel');
+        $this->isValidForm = true;
     }
 
     /**
+     * Router
+     * Call the good method
+     * @param string $page
+     * * @throws Exception
+     */
+    public function route(string $page)
+    {
+        if (!$page) {
+            $page = 'register';
+        }
+        try {
+            $this->$page();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Register a User
      * @throws ErrorException
      */
     public function register()
@@ -26,7 +46,7 @@ class UsersController extends Controller
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            // Init data
+            // Initialize data
             $data = [
                 'name' => trim($_POST['name']),
                 'email' => trim($_POST['email']),
@@ -80,11 +100,11 @@ class UsersController extends Controller
                 // Hash Password
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-                // Register User
+                // Register UserModel
                 if ($this->isValidForm) {
                     if ($this->userModel->register($data)) {
                         flashMessage('flash_message', 'Vous êtes enregistré et vous pouvez vous connecter');
-                        redirectPage('users/login');
+                        redirectPage('users/connect');
                     } else {
                         throw new ErrorException("Quelque chose c'est mal passé");
                     }
@@ -93,8 +113,8 @@ class UsersController extends Controller
                     redirectPage('users/register');
                 }
             } else {
-                // Load loadView with errors
-                $this->loadView('users/register', $data);
+                // Load render with errors
+                $this->render('users/register', $data);
             }
         } else {
             // Init data
@@ -109,15 +129,16 @@ class UsersController extends Controller
                 'confirm_password_error' => ''
             ];
 
-            // Load loadView
-            $this->loadView('users/register', $data);
+            // Load render
+            $this->render('users/register', $data);
         }
     }
 
     /**
+     * Connect User Model with Email & password
      * @throws ErrorException
      */
-    public function login()
+    public function connect()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST data
@@ -148,24 +169,24 @@ class UsersController extends Controller
 
                 // Check CSRF Token
                 if (!empty($_POST['csrf_token'])) {
-                    if (!checkCSRFToken($_POST['csrf_token'], 'loginForm')) {
+                    if (!checkCSRFToken($_POST['csrf_token'], 'connectForm')) {
                         flashMessage('flash_message', 'Violation CSRF', 'alert alert-danger');
-                        redirectPage('users/login');
+                        redirectPage('users/connect');
                         return;
                     }
                 }
 
-                $loggedInUser = $this->userModel->login($data['email'], $data['password']);
+                $loggedInUser = $this->userModel->connect($data['email'], $data['password']);
 
                 if ($loggedInUser) {
                     $this->createUserSession($loggedInUser);
                 } else {
                     $data['password_error'] = 'Mot de passe incorrect';
 
-                    $this->loadView('users/login', $data);
+                    $this->render('users/connect', $data);
                 }
             } else {
-                $this->loadView('users/login', $data);
+                $this->render('users/connect', $data);
             }
         } else {
             $data = [
@@ -175,15 +196,16 @@ class UsersController extends Controller
                 'password_error' => '',
             ];
 
-            $this->loadView('users/login', $data);
+            $this->render('users/connect', $data);
         }
     }
 
 
     /**
+     * Create a User Session
      * @param $user
      */
-    public function createUserSession($user)
+    protected function createUserSession($user)
     {
         $_SESSION['user_id'] = $user->id;
         $_SESSION['user_email'] = $user->email;
@@ -193,22 +215,24 @@ class UsersController extends Controller
     }
 
     /**
-     *
+     * Disconnect User
+     * Destroy Session
      */
-    public function logout()
+    public function disconnect()
     {
         unset($_SESSION['user_id']);
         unset($_SESSION['user_email']);
         unset($_SESSION['user_name']);
         session_destroy();
 
-        redirectPage('users/login');
+        redirectPage('users/connect');
     }
 
     /**
+     * Check if a User is connected
      * @return bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn() : bool
     {
         if (isset($_SESSION['user_id'])) {
             return true;

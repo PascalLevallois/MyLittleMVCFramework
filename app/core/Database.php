@@ -19,7 +19,6 @@ class Database
 
     private $pdo;
     private $stmt;
-    private $error;
 
     /**
      * Database constructor.

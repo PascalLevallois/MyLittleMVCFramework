@@ -5,8 +5,8 @@
                 <?php flashMessage('flash_message'); ?>
                 <h2>Connexion</h2>
                 <p>Remplissez ce formulaire avec vos données de connexion</p>
-                <form action="<?php echo URL_ROOT; ?>/users/login" method="post" name="loginForm">
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken('loginForm')); ?>"/>
+                <form action="<?php echo URL_ROOT; ?>/users/connect" method="post" name="connectForm">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCSRFToken('connectForm')); ?>"/>
                     <div class="form-group">
                         <label for="email">Email: <sup><span>*</span></sup></label>
                         <input type="email" name="email"

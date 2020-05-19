@@ -18,14 +18,14 @@
         <ul class="navbar-nav ml-auto">
           <?php if (isset($_SESSION['user_id'])) : ?>
           <li class="nav-item">
-              <a class="nav-link" href="<?php echo URL_ROOT; ?>/users/logout">Déconnexion</a>
+              <a class="nav-link" href="<?php echo URL_ROOT; ?>/users/disconnect">Déconnexion</a>
             </li>
           <?php else : ?>
             <li class="nav-item">
               <a class="nav-link" href="<?php echo URL_ROOT; ?>/users/register">S'inscrire</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="<?php echo URL_ROOT; ?>/users/login">Connexion</a>
+              <a class="nav-link" href="<?php echo URL_ROOT; ?>/users/connect">Connexion</a>
             </li>
           <?php endif; ?>
         </ul>
