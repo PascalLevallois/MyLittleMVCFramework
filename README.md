@@ -1,5 +1,5 @@
 # MyLittleMVCFramework
-Squelette de Framework MVC en PHP 7
+Squelette de Framework MVC en PHP 7 (écrit en 2 jours)
 
 Protections failles XSS, injections SQL ou Javascript et attaques CSRF
 
